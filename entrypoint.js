@@ -3,7 +3,18 @@ const fetch = require('node-fetch')
 
 Toolkit.run(async tools => {
   // 1. Serialize payload object
-  const payload = tools.context.payload
+  const payload = {
+    ...tools.context.payload,
+    smee: {
+      action: tools.context.action,
+      actor: tools.context.actor,
+      event: tools.context.event,
+      sha: tools.context.sha,
+      ref: tools.context.ref,
+      workflow: tools.context.workflow
+    }
+  }
+
   // 2. Serialize headers
   const headers = {
     'X-GitHub-Event': tools.context.event
