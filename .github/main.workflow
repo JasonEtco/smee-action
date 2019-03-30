@@ -4,6 +4,6 @@ workflow "Smee!" {
 }
 
 action "smee" {
-  uses = "."
+  uses = "./"
   args = "--channel smee-action-testing"
 }
