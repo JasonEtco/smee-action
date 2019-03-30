@@ -33,7 +33,7 @@ A common misconception about Smee.io is that the payloads will be available all 
 
 ## Specifying the channel
 
-By default, this Action will post event payloads to the **smee.io/REPOSITORY_ID** - if you aren't sure what that is, it'll log it for you the first time your run the Action.
+By default, this Action will post event payloads to the **smee.io/REPOSITORY_ID** - if you aren't sure what that is, it'll log it for you the first time you run the Action.
 
 You can specify what channel you want to send to:
 
