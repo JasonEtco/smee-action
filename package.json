@@ -2,6 +2,9 @@
   "name": "smee-action",
   "private": true,
   "main": "index.js",
+  "scripts": {
+    "test": "jest --coverage && standard"
+  },
   "dependencies": {
     "actions-toolkit": "^1.9.1",
     "node-fetch": "^2.3.0",
@@ -11,5 +14,15 @@
     "jest": "^24.5.0",
     "nock": "^10.0.6",
     "standard": "^12.0.1"
+  },
+  "standard": {
+    "env": [
+      "jest"
+    ]
+  },
+  "jest": {
+    "setupFiles": [
+      "<rootDir>/tests/setup.js"
+    ]
   }
 }
