@@ -6,7 +6,7 @@ Toolkit.run(async tools => {
   // Serialize payload object
   const payload = {
     ...tools.context.payload,
-    smee: {
+    'smee-action': {
       action: tools.context.action,
       actor: tools.context.actor,
       event: tools.context.event,
