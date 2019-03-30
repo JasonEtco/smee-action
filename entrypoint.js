@@ -1,8 +1,9 @@
 const { Toolkit } = require('actions-toolkit')
 const fetch = require('node-fetch')
+const hash = require('object-hash')
 
 Toolkit.run(async tools => {
-  // 1. Serialize payload object
+  // Serialize payload object
   const payload = {
     ...tools.context.payload,
     smee: {
@@ -15,18 +16,20 @@ Toolkit.run(async tools => {
     }
   }
 
-  // 2. Serialize headers
+  // Serialize headers
   const headers = {
-    'X-GitHub-Event': tools.context.event
+    'X-GitHub-Event': tools.context.event,
+    // Generate a hash of the contents of the payload to prevent duplication
+    'X-GitHub-Delivery': hash(payload)
   }
-  // 3. Get channel from either the argument or `/${await tools.github.repos.get(tools.context.repo)}`
+  // Get the channel id
   const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/')
   const channel = process.env.SMEE_CHANNEL || // Use the provided secret
                   tools.arguments.channel || // Use the --channel argument
                   (await tools.github.repos.get({ owner, repo })).data.id // Use the repo's ID
 
   try {
-    // 4. Make POST request
+    // Send the data to Smee
     const url = `https://smee.io/${channel}`
     await fetch(url, {
       method: 'POST',
