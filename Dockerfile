@@ -11,7 +11,7 @@
 FROM node:alpine
 
 # Labels for GitHub to read your action
-LABEL "com.github.actions.name"="Smee"
+LABEL "com.github.actions.name"="Smee Action"
 LABEL "com.github.actions.description"="Use https://smee.io to debug Action runs"
 # Here are all of the available icons: https://feathericons.com/
 LABEL "com.github.actions.icon"="activity"
