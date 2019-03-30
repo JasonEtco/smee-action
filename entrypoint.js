@@ -1,10 +1,34 @@
 const { Toolkit } = require('actions-toolkit')
-const tools = new Toolkit()
+const fetch = require('node-fetch')
 
-// 1. Serialize payload object
-// 2. Serialize headers
-// 3. Get channel from either the argument or `/${await tools.github.repos.get(tools.context.repo)}`
-// 4. Make POST request
-// 5. Log stuff
+Toolkit.run(async tools => {
+  // 1. Serialize payload object
+  const payload = tools.context.payload
+  // 2. Serialize headers
+  const headers = {
+    'X-GitHub-Event': tools.context.event
+  }
+  // 3. Get channel from either the argument or `/${await tools.github.repos.get(tools.context.repo)}`
+  const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/')
+  const channel = process.env.SMEE_CHANNEL || // Use the provided secret
+                  tools.arguments.channel || // Use the --channel argument
+                  (await tools.github.repos.get({ owner, repo })).data.id // Use the repo's ID
 
-console.log(tools.arguments)
+  try {
+    // 4. Make POST request
+    const url = `https://smee.io/${channel}`
+    await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+      }
+    })
+
+    tools.log.success(`Done! Check it out at ${url}.`)
+    tools.log.info('Remember that Smee only shows payloads received while your browser tab is open!')
+  } catch (err) {
+    tools.exit.failure(err)
+  }
+})
