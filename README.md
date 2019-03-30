@@ -1,3 +1,6 @@
+<p align="center">
+  <img width="300" src="https://user-images.githubusercontent.com/10660468/55279861-281d0880-52f4-11e9-91ee-b715aa8953f8.png" />
+</p>
 <h3 align="center">Smee Action</h3>
 <p align="center">Use <a href="https://smee.io">smee.io</a> to debug Action runs<p>
 
@@ -20,7 +23,7 @@ action "test" {
 ```
 
 <h3 align="center">⚠️</h3>
-<p align="center">Heads up! This is only to be used for debugging, not for sensitive data. Smee.io is not secured by any authentication, so anyone with the channel ID can view your payloads as they come in.</p>
+<p align="center">Heads up! This is only to be used for debugging, <strong>not for sensitive data</strong>. Smee.io is not secured by any authentication, so anyone with the channel ID can view your payloads as they come in.</p>
 
 ---
 
