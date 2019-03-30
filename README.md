@@ -19,7 +19,10 @@ action "test" {
 }
 ```
 
-:warning: Heads up! This is only to be used for debugging, not for sensitive data. Smee.io is not secured by any authentication, so anyone with the channel ID can view your payloads as they come in. :warning:
+<h3 align="center">⚠️</h3>
+<p align="center">Heads up! This is only to be used for debugging, not for sensitive data. Smee.io is not secured by any authentication, so anyone with the channel ID can view your payloads as they come in.</p>
+
+---
 
 ## Seeing the payloads
 
