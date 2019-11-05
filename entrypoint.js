@@ -1,34 +1,41 @@
-const { Toolkit } = require('actions-toolkit')
+const core = require('@actions/core')
+const { GitHub, context } = require('@actions/github')
+const token = process.env.GITHUB_TOKEN
+const octokit = new GitHub(token)
 const fetch = require('node-fetch')
 const hash = require('object-hash')
 
-Toolkit.run(async tools => {
-  // Serialize payload object
-  const payload = {
-    ...tools.context.payload,
-    'smee-action': {
-      action: tools.context.action,
-      actor: tools.context.actor,
-      event: tools.context.event,
-      sha: tools.context.sha,
-      ref: tools.context.ref,
-      workflow: tools.context.workflow
-    }
-  }
-
-  // Serialize headers
-  const headers = {
-    'X-GitHub-Event': tools.context.event,
-    // Generate a hash of the contents of the payload to prevent duplication
-    'X-GitHub-Delivery': hash(payload)
-  }
-  // Get the channel id
-  const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/')
-  const channel = process.env.SMEE_CHANNEL || // Use the provided secret
-                  tools.arguments.channel || // Use the --channel argument
-                  (await tools.github.repos.get({ owner, repo })).data.id // Use the repo's ID
-
+async function run () {
   try {
+    // Serialize payload object
+    const payload = {
+      ...context.payload,
+      'smee-action': {
+        action: context.action,
+        actor: context.actor,
+        event: context.eventName,
+        sha: context.sha,
+        ref: context.ref,
+        workflow: context.workflow
+      }
+    }
+    const smeeChannel = core.getInput('smeeChannel')
+
+    core.debug(`Payload: ${JSON.stringify(payload)}`)
+
+    // Serialize headers
+    const headers = {
+      'X-GitHub-Event': context.eventName,
+      // Generate a hash of the contents of the payload to prevent duplication
+      'X-GitHub-Delivery': hash(payload)
+    }
+
+    core.debug(`Headers: ${JSON.stringify(headers)}`)
+
+    const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/')
+    const repoId = (await octokit.repos.get({ owner, repo })).data.id
+    const channel = smeeChannel || repoId // Prefer smeeChannel input, fall back to repository ID
+
     // Send the data to Smee
     const url = `https://smee.io/${channel}`
     await fetch(url, {
@@ -40,9 +47,16 @@ Toolkit.run(async tools => {
       }
     })
 
-    tools.log.success(`Done! Check it out at ${url}.`)
-    tools.log.info('Remember that Smee only shows payloads received while your browser tab is open!')
-  } catch (err) {
-    tools.exit.failure(err)
+    core.info(`Done! Check it out at ${url}.`)
+    core.info('Remember that Smee only shows payloads received while your browser tab is open!')
+  } catch (error) {
+    core.setFailed(error.message)
   }
-})
+}
+
+module.exports = run
+
+/* istanbul ignore next */
+if (require.main === module) {
+  run()
+}

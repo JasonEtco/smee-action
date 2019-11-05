@@ -6,20 +6,20 @@
 
 ## Usage
 
-```workflow
-workflow "Smee!" {
-  on = "push"
-  resolves = ["test"]
-}
+```yaml
+name: Test Smee Action
 
-# Place this Action early in your workflow
-action "smee" {
-  uses = "JasonEtco/smee-action@master"
-}
+on:
+  push
 
-action "test" {
-  needs = ["smee"]
-}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: JasonEtco/smee-action@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 <h3 align="center">⚠️</h3>
@@ -37,16 +37,10 @@ By default, this Action will post event payloads to the **smee.io/REPOSITORY_ID*
 
 You can specify what channel you want to send to:
 
-```workflow
-# Using arguments
-action "smee" {
-  uses = "JasonEtco/smee-action@master"
-  args = "--channel my-channel"
-}
-
-# Using a secret
-action "smee" {
-  uses = "JasonEtco/smee-action@master"
-  secrets = ["SMEE_CHANNEL"]
-}
+```yaml
+- uses: JasonEtco/smee-action@v1
+  with:
+    smeeChannel: 'my-smee-channel' # or leave empty to use the repository ID
+  env:
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```

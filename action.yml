@@ -1,0 +1,12 @@
+name: 'Smee Action'
+description: 'Use https://smee.io to debug Action runs'
+author: 'Jason Etco'
+branding:
+  icon: 'activity'
+  color: 'red'
+inputs:
+  smeeChannel:
+    description: 'Smee channel to use'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
