@@ -1,8 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`smee-action exits with a failure if the POST fails 1`] = `[FetchError: request to https://smee.io/123 failed, reason: 500]`;
-
-exports[`smee-action makes a POST request to smee.io using --channel argument 1`] = `
+exports[`smee-action makes a POST request to smee.io using the \`channel\` input 1`] = `
 Object {
   "repository": Object {
     "name": "in-a-coffee-shop",
@@ -21,7 +19,7 @@ Object {
 }
 `;
 
-exports[`smee-action makes a POST request to smee.io using SMEE_CHANNEL env var 1`] = `
+exports[`smee-action makes a POST request to smee.io using the repository's owner-name 1`] = `
 Object {
   "repository": Object {
     "name": "in-a-coffee-shop",
@@ -40,21 +38,4 @@ Object {
 }
 `;
 
-exports[`smee-action makes a POST request to smee.io using the repository's id 1`] = `
-Object {
-  "repository": Object {
-    "name": "in-a-coffee-shop",
-    "owner": Object {
-      "login": "JasonEtco",
-    },
-  },
-  "smee-action": Object {
-    "action": "GITHUB_ACTION",
-    "actor": "GITHUB_ACTOR",
-    "event": "GITHUB_EVENT_NAME",
-    "ref": "GITHUB_REF",
-    "sha": "GITHUB_SHA",
-    "workflow": "GITHUB_WORKFLOW",
-  },
-}
-`;
+exports[`smee-action throws if the POST fails 1`] = `"request to https://smee.io/JasonEtco-in-a-coffee-shop failed, reason: 500"`;

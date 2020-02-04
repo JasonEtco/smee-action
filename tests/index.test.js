@@ -1,59 +1,35 @@
-const { Toolkit } = require('actions-toolkit')
-const { Signale } = require('signale')
+const core = require('@actions/core')
 const nock = require('nock')
+const postToSmee = require('../post-to-smee')
+
+jest.mock('@actions/core')
 
 describe('smee-action', () => {
-  let func, tools, data
+  let data
 
   beforeEach(() => {
-    Toolkit.run = jest.fn(fn => { func = fn })
-    require('../entrypoint')
-
-    const logger = new Signale({ disabled: true })
-    logger.info = jest.fn()
-    logger.success = jest.fn()
-
-    nock('https://api.github.com')
-      .get(/\/repos\/.*\/.*/).reply(200, { id: 123 })
-
-    tools = new Toolkit({ logger })
-    tools.exit.failure = jest.fn()
-
     nock('https://smee.io')
       .post(/.*/).reply(200, (match, body) => {
         data = { match, body }
       })
   })
 
-  it('makes a POST request to smee.io using the repository\'s id', async () => {
-    await func(tools)
-    expect(data.match).toBe('/123')
+  it('makes a POST request to smee.io using the repository\'s owner-name', async () => {
+    await postToSmee()
+    expect(data.match).toBe('/JasonEtco-in-a-coffee-shop')
     expect(data.body).toMatchSnapshot()
   })
 
-  it('makes a POST request to smee.io using SMEE_CHANNEL env var', async () => {
-    process.env.SMEE_CHANNEL = 'pizzadog'
-    await func(tools)
+  it('makes a POST request to smee.io using the `channel` input', async () => {
+    jest.spyOn(core, 'getInput').mockReturnValueOnce('pizzadog')
+    await postToSmee()
     expect(data.match).toBe('/pizzadog')
     expect(data.body).toMatchSnapshot()
-    delete process.env.SMEE_CHANNEL
   })
 
-  it('makes a POST request to smee.io using --channel argument', async () => {
-    tools.arguments.channel = 'arg-im-a-pirate'
-    await func(tools)
-    expect(data.match).toBe('/arg-im-a-pirate')
-    expect(data.body).toMatchSnapshot()
-  })
-
-  it('exits with a failure if the POST fails', async () => {
+  it('throws if the POST fails', async () => {
     nock.cleanAll()
     nock('https://smee.io').post(/.*/).replyWithError(500)
-    nock('https://api.github.com')
-      .get(/\/repos\/.*\/.*/).reply(200, { id: 123 })
-
-    await func(tools)
-    expect(tools.exit.failure).toHaveBeenCalled()
-    expect(tools.exit.failure.mock.calls[0][0]).toMatchSnapshot()
+    await expect(postToSmee()).rejects.toThrowErrorMatchingSnapshot()
   })
 })
