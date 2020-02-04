@@ -2,7 +2,7 @@ const core = require('@actions/core')
 const { context } = require('@actions/github')
 const fetch = require('node-fetch')
 
-async function run () {
+module.exports = async function postToSmee () {
   // Serialize payload object
   const payload = {
     ...context.payload,
@@ -31,24 +31,18 @@ async function run () {
     `${context.repo.owner}-${context.repo.repo}`
   )
 
-  try {
-    // Send the data to Smee
-    const url = `https://smee.io/${channel}`
-    await fetch(url, {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: {
-        ...headers,
-        'Content-Type': 'application/json'
-      }
-    })
+  // Send the data to Smee
+  const url = `https://smee.io/${channel}`
+  await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json'
+    }
+  })
 
-    core.info(`Done! Check it out at ${url}.`)
-    core.info('Remember that Smee only shows payloads received while your browser tab is open!')
-    core.setOutput('url', url)
-  } catch (err) {
-    core.setFailed(err)
-  }
+  core.info(`Done! Check it out at ${url}.`)
+  core.info('Remember that Smee only shows payloads received while your browser tab is open!')
+  core.setOutput('url', url)
 }
-
-run()
