@@ -1,8 +1,8 @@
 name: Smee
 description: Posts webhook payloads to Smee.io to help debug GitHub Action runs
 runs:
-  using: docker
-  image: Dockerfile
+  using: node12
+  main: index.js
 branding:
   icon: activity
   color: red
