@@ -14,7 +14,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: JasonEtco/smee-action@v1
+    - uses: JasonEtco/smee-action@v2
 ```
 
 
@@ -35,7 +35,7 @@ You can specify what channel you want to send to:
 
 ```yaml
 steps:
-  - uses: JasonEtco/smee-action@v1
+  - uses: JasonEtco/smee-action@v2
     with:
       channel: my-channel
 ```
