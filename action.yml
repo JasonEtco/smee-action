@@ -4,8 +4,8 @@ runs:
   using: docker
   image: Dockerfile
 branding:
-  icon: circle
-  color: blue
+  icon: activity
+  color: red
 inputs:
   channel:
     description: The Smee channel to use. By default, it will use the ID of the repository.
