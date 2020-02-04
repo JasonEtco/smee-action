@@ -1,31 +1,35 @@
 const core = require('@actions/core')
-const { Toolkit } = require('actions-toolkit')
+const { context } = require('@actions/github')
 const fetch = require('node-fetch')
 
-Toolkit.run(async tools => {
+async function run () {
   // Serialize payload object
   const payload = {
-    ...tools.context.payload,
+    ...context.payload,
     'smee-action': {
-      action: tools.context.action,
-      actor: tools.context.actor,
-      event: tools.context.event,
-      sha: tools.context.sha,
-      ref: tools.context.ref,
-      workflow: tools.context.workflow
+      action: context.action,
+      actor: context.actor,
+      event: process.env.GITHUB_EVENT_NAME,
+      sha: context.sha,
+      ref: context.ref,
+      workflow: context.workflow,
+      run_id: process.env.GITHUB_RUN_ID
     }
   }
 
   // Serialize headers
   const headers = {
-    'X-GitHub-Event': tools.context.event,
+    'X-GitHub-Event': process.env.GITHUB_EVENT_NAME,
     // Used to prevent duplication
     'X-GitHub-Delivery': process.env.GITHUB_RUN_ID
   }
   // Get the channel id
-  const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/')
-  const channel = core.getInput('channel') || // Use the provided secret
-                  (await tools.github.repos.get({ owner, repo })).data.id // Use the repo's ID
+  const channel = (
+    // Use the provided `channel` input
+    core.getInput('channel') ||
+    // Default to `owner-repo`
+    `${context.repo.owner}-${context.repo.repo}`
+  )
 
   try {
     // Send the data to Smee
@@ -39,10 +43,12 @@ Toolkit.run(async tools => {
       }
     })
 
-    tools.log.success(`Done! Check it out at ${url}.`)
-    tools.log.info('Remember that Smee only shows payloads received while your browser tab is open!')
+    core.info(`Done! Check it out at ${url}.`)
+    core.info('Remember that Smee only shows payloads received while your browser tab is open!')
     core.setOutput('url', url)
   } catch (err) {
     core.setFailed(err)
   }
-})
+}
+
+run()

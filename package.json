@@ -7,7 +7,6 @@
   },
   "dependencies": {
     "@actions/core": "^1.2.2",
-    "actions-toolkit": "^2.2.0",
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
