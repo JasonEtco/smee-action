@@ -1,0 +1,14 @@
+name: Smee
+description: Posts webhook payloads to Smee.io to help debug GitHub Action runs
+runs:
+  using: docker
+  image: Dockerfile
+branding:
+  icon: circle
+  color: blue
+inputs:
+  channel:
+    description: The Smee channel to use. By default, it will use the ID of the repository.
+outputs:
+  url:
+    description: The full URL that this action is sending payloads to.
