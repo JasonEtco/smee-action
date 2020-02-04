@@ -13,4 +13,4 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
-    - run: node ./entrypoint.js --channel smee-action-testing
+    - run: node ./index.js --channel smee-action-testing

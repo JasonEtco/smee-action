@@ -6,21 +6,17 @@
 
 ## Usage
 
-```workflow
-workflow "Smee!" {
-  on = "push"
-  resolves = ["test"]
-}
+```yaml
+# .github/workflows/smee.yml
+on: [push]
 
-# Place this Action early in your workflow
-action "smee" {
-  uses = "JasonEtco/smee-action@master"
-}
-
-action "test" {
-  needs = ["smee"]
-}
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: JasonEtco/smee-action@v1
 ```
+
 
 <h3 align="center">⚠️</h3>
 <p align="center">Heads up! This is only to be used for debugging, <strong>not for sensitive data</strong>. Smee.io is not secured by any authentication, so anyone with the channel ID can view your payloads as they come in.</p>
@@ -33,20 +29,13 @@ A common misconception about Smee.io is that the payloads will be available all 
 
 ## Specifying the channel
 
-By default, this Action will post event payloads to the **smee.io/REPOSITORY_ID** - if you aren't sure what that is, it'll log it for you the first time you run the Action.
+By default, this Action will post event payloads to the **smee.io/owner-name**.
 
 You can specify what channel you want to send to:
 
-```workflow
-# Using arguments
-action "smee" {
-  uses = "JasonEtco/smee-action@master"
-  args = "--channel my-channel"
-}
-
-# Using a secret
-action "smee" {
-  uses = "JasonEtco/smee-action@master"
-  secrets = ["SMEE_CHANNEL"]
-}
+```yaml
+steps:
+  - uses: JasonEtco/smee-action@v1
+    with:
+      channel: my-channel
 ```
