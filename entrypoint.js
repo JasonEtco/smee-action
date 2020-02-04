@@ -1,6 +1,6 @@
+const core = require('@actions/core')
 const { Toolkit } = require('actions-toolkit')
 const fetch = require('node-fetch')
-const hash = require('object-hash')
 
 Toolkit.run(async tools => {
   // Serialize payload object
@@ -19,13 +19,12 @@ Toolkit.run(async tools => {
   // Serialize headers
   const headers = {
     'X-GitHub-Event': tools.context.event,
-    // Generate a hash of the contents of the payload to prevent duplication
-    'X-GitHub-Delivery': hash(payload)
+    // Used to prevent duplication
+    'X-GitHub-Delivery': process.env.GITHUB_RUN_ID
   }
   // Get the channel id
   const [owner, repo] = process.env.GITHUB_REPOSITORY.split('/')
-  const channel = process.env.SMEE_CHANNEL || // Use the provided secret
-                  tools.arguments.channel || // Use the --channel argument
+  const channel = core.getInput('channel') || // Use the provided secret
                   (await tools.github.repos.get({ owner, repo })).data.id // Use the repo's ID
 
   try {
@@ -42,7 +41,8 @@ Toolkit.run(async tools => {
 
     tools.log.success(`Done! Check it out at ${url}.`)
     tools.log.info('Remember that Smee only shows payloads received while your browser tab is open!')
+    core.setOutput('url', url)
   } catch (err) {
-    tools.exit.failure(err)
+    core.setFailed(err)
   }
 })
