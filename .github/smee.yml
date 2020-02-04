@@ -1,4 +1,4 @@
-name: Node CI
+name: Smee
 
 on: [push]
 
@@ -13,9 +13,4 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: 12.x
-    - run: npm ci
-    - run: npm test
-    - name: codecov
-      run: npx codecov
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+    - run: node ./entrypoint.js --channel smee-action-testing
