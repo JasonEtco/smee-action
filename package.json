@@ -6,7 +6,7 @@
     "test": "jest --coverage && standard"
   },
   "dependencies": {
-    "@actions/core": "^1.2.2",
+    "@actions/core": "^1.9.1",
     "@actions/github": "^2.1.0",
     "node-fetch": "^2.6.0"
   },
